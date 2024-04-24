@@ -29,6 +29,43 @@ void Node::addSelfFault() {
     else list.insert(faults[1]);
 }
 
+void Node::mergeBranch(const Node& fanIn) {
+    list.insert(fanIn.list.begin(), fanIn.list.end());
+}
+
+void Node::mergeAnd(const Node& fanIn1, const Node& fanIn2) {
+    if (trueValue) {
+        list.insert(fanIn1.list.begin(), fanIn1.list.end());
+        list.insert(fanIn2.list.begin(), fanIn2.list.end());
+    } else {
+        if (fanIn1.trueValue) {
+            for (const auto& entry : fanIn2.list) {
+                auto it = fanIn1.list.find(entry.first);
+                if (it==fanIn1.list.end()) list.insert(entry);
+            }
+        } else if (fanIn2.trueValue) {
+            for (const auto& entry : fanIn1.list) {
+                auto it = fanIn2.list.find(entry.first);
+                if (it==fanIn2.list.end()) list.insert(entry);
+            }  
+        } else {
+            for (const auto& entry : fanIn2.list) {
+                auto it = fanIn1.list.find(entry.first);
+                if (it!=fanIn1.list.end()) list.insert(entry);
+            }
+        }
+    }
+}
+
+void Circuit::trueValueSimulation () {
+    nodeList["y21"].trueValue = nodeList["x2"].trueValue;
+    nodeList["y22"].trueValue = nodeList["x2"].trueValue;
+    nodeList["a"].trueValue = nodeList["y21"].trueValue && nodeList["x1"].trueValue;
+    nodeList["b"].trueValue = !(nodeList["y22"].trueValue || nodeList["x3"].trueValue);
+    nodeList["c"].trueValue = !nodeList["x4"].trueValue;
+    nodeList["z"].trueValue = nodeList["a"].trueValue || nodeList["b"].trueValue || nodeList["c"].trueValue;
+}
+
 void Circuit::deductiveSimulation() {
     for (int i = 0; i < 16; ++i) {
         // Assign input values based on the bit representation of i
@@ -38,8 +75,17 @@ void Circuit::deductiveSimulation() {
         nodeList["x3"].trueValue = (i & 2) ? true : false;
         nodeList["x4"].trueValue = (i & 1) ? true : false;
 
+        trueValueSimulation();
         for (int i=0; i<10; i++) {
             nodeList[nodeName[i]].addSelfFault();
         }
+        
+        nodeList["y21"].mergeBranch(nodeList["x2"]);
+        nodeList["y22"].mergeBranch(nodeList["x2"]);
+
+
+
+        
+        
     }
 }

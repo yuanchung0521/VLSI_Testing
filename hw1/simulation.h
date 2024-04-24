@@ -22,6 +22,8 @@ struct Node {
 
     Node(string& _name): name(_name), trueValue(false) {};
     void addSelfFault();
+    void mergeBranch(const Node& fanIn);
+    void mergeAnd(const Node& fanIn1, const Node& fanIn2);
 };
 
 
@@ -33,5 +35,6 @@ private:
     
 public:
     Circuit();
+    void trueValueSimulation();
     void deductiveSimulation();
 };
