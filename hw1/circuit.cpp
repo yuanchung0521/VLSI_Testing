@@ -1,8 +1,8 @@
-#include "simulation.h"
+#include "circuit.h"
 
 Circuit::Circuit() {
-    string stuckAt0("StuckAt0");
-    string stuckAt1("StuckAt1");
+    string stuckAt0("_0");
+    string stuckAt1("_1");
     string faultName;
     Fault* newFault;
 
@@ -24,38 +24,6 @@ Circuit::Circuit() {
     }
 }
 
-void Node::addSelfFault() {
-    if (trueValue) list.insert(faults[0]);
-    else list.insert(faults[1]);
-}
-
-void Node::mergeBranch(const Node& fanIn) {
-    list.insert(fanIn.list.begin(), fanIn.list.end());
-}
-
-void Node::mergeAnd(const Node& fanIn1, const Node& fanIn2) {
-    if (trueValue) {
-        list.insert(fanIn1.list.begin(), fanIn1.list.end());
-        list.insert(fanIn2.list.begin(), fanIn2.list.end());
-    } else {
-        if (fanIn1.trueValue) {
-            for (const auto& entry : fanIn2.list) {
-                auto it = fanIn1.list.find(entry.first);
-                if (it==fanIn1.list.end()) list.insert(entry);
-            }
-        } else if (fanIn2.trueValue) {
-            for (const auto& entry : fanIn1.list) {
-                auto it = fanIn2.list.find(entry.first);
-                if (it==fanIn2.list.end()) list.insert(entry);
-            }  
-        } else {
-            for (const auto& entry : fanIn2.list) {
-                auto it = fanIn1.list.find(entry.first);
-                if (it!=fanIn1.list.end()) list.insert(entry);
-            }
-        }
-    }
-}
 
 void Circuit::trueValueSimulation () {
     nodeList["y21"].trueValue = nodeList["x2"].trueValue;
@@ -67,6 +35,8 @@ void Circuit::trueValueSimulation () {
 }
 
 void Circuit::deductiveSimulation() {
+    cout << "x1\tx2\tx3\tx4\ty21\ty22\ta\tb\tc\tz" << endl;
+
     for (int i = 0; i < 16; ++i) {
         // Assign input values based on the bit representation of i
 
@@ -77,15 +47,27 @@ void Circuit::deductiveSimulation() {
 
         trueValueSimulation();
         for (int i=0; i<10; i++) {
+            cout << nodeList[nodeName[i]].trueValue << "\t";
+            nodeList[nodeName[i]].cleanList();
             nodeList[nodeName[i]].addSelfFault();
         }
-        
-        nodeList["y21"].mergeBranch(nodeList["x2"]);
-        nodeList["y22"].mergeBranch(nodeList["x2"]);
-
-
+        cout << endl;
 
         
+        nodeList["y21"].mergeBranchInv(nodeList["x2"]);
+        nodeList["y22"].mergeBranchInv(nodeList["x2"]);
+
+        nodeList["a"].mergeAnd(nodeList["y21"], nodeList["x1"]);
+        nodeList["b"].mergeNor(nodeList["y22"], nodeList["x3"]);
         
+        nodeList["c"].mergeBranchInv(nodeList["x4"]);
+        nodeList["z"].mergeOr3(nodeList["a"], nodeList["b"], nodeList["c"]);
+
+    }
+}
+
+void Circuit::printAllNode() {
+    for (int i=0; i<10; i++) {
+        nodeList[nodeName[i]].print();
     }
 }

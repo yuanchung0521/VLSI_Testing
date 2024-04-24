@@ -9,32 +9,28 @@ struct Fault {
     string name;
     bool stuckAt;
     int count;
-
+    Fault() {};
+    ~Fault() {};
     Fault(string& _name, bool _stuckAt): count(0), name(_name), stuckAt(_stuckAt) {}    
 };
+class Circuit;
 
-struct Node {
-
+class Node {
+private:
     string name;
     bool trueValue;
     vector<pair<string, Fault*>> faults;
     unordered_map<string, Fault*> list;
+    friend Circuit;
 
-    Node(string& _name): name(_name), trueValue(false) {};
-    void addSelfFault();
-    void mergeBranch(const Node& fanIn);
-    void mergeAnd(const Node& fanIn1, const Node& fanIn2);
-};
-
-
-class Circuit {
-private:
-    string nodeName[10] = {"x1", "x2", "x3", "x4", "y21", "y22", "a", "b", "c", "z"};
-    unordered_map<string, Fault*> faultList;
-    unordered_map<string, Node> nodeList;
-    
 public:
-    Circuit();
-    void trueValueSimulation();
-    void deductiveSimulation();
+    Node(){};
+    Node(string& _name): name(_name), trueValue(false) {};
+    void cleanList();
+    void addSelfFault();
+    void mergeBranchInv(const Node& fanIn);
+    void mergeAnd(const Node& fanIn1, const Node& fanIn2);
+    void mergeNor(const Node& fanIn1, const Node& fanIn2);
+    void mergeOr3(const Node& fanIn1, const Node& fanIn2, const Node& fanIn3);
+    void print() const;
 };

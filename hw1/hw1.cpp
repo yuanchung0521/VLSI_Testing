@@ -1,4 +1,4 @@
-#include "simulation.h"
+#include "circuit.h"
 
 int main() {
 
@@ -8,6 +8,6 @@ int main() {
 
     circuit.deductiveSimulation();
     // result show here
-
+    circuit.printAllNode();
     return 0;
 }
