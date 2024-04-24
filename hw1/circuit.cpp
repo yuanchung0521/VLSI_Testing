@@ -1,6 +1,6 @@
 #include "circuit.h"
 
-Circuit::Circuit() {
+Circuit::Circuit(): avgFaultPerInput(0), avgPatternPerFault(0) {
     string stuckAt0("_0");
     string stuckAt1("_1");
     string faultName;
@@ -35,10 +35,51 @@ void Circuit::trueValueSimulation () {
 }
 
 void Circuit::deductiveSimulation() {
+    cout << "===================== (b) deductive Fault Simulation =====================" << endl;
+    for (int i = 0; i < 16; ++i) {
+
+        nodeList["x1"].trueValue = (i & 8) ? true : false;
+        nodeList["x2"].trueValue = (i & 4) ? true : false;
+        nodeList["x3"].trueValue = (i & 2) ? true : false;
+        nodeList["x4"].trueValue = (i & 1) ? true : false;
+
+        trueValueSimulation();
+        for (int i=0; i<10; i++) {
+            nodeList[nodeName[i]].cleanList();
+            nodeList[nodeName[i]].addSelfFault();
+        }
+        cout << endl;
+
+        nodeList["y21"].mergeBranchInv(nodeList["x2"]);
+        nodeList["y22"].mergeBranchInv(nodeList["x2"]);
+
+        nodeList["a"].mergeAnd(nodeList["y21"], nodeList["x1"]);
+        nodeList["b"].mergeNor(nodeList["y22"], nodeList["x3"]);
+        
+        nodeList["c"].mergeBranchInv(nodeList["x4"]);
+        nodeList["z"].mergeOr3(nodeList["a"], nodeList["b"], nodeList["c"]);
+        
+        cout << "Input pattern (x1, x2, x3, x4) = (" << nodeList["x1"].trueValue << " ," << nodeList["x2"].trueValue << " ," <<  nodeList["x3"].trueValue << " ," << nodeList["x4"].trueValue << ") : " << endl;
+        cout << "- #stuct-at-fault = " << nodeList["z"].list.size() << endl;
+        cout << "- faults = ";
+        printFaultDetected();
+        
+        avgFaultPerInput += nodeList["z"].list.size();
+        for (auto& fault: nodeList["z"].list) {
+            fault.second->count++;
+        }
+    }
+    cout << "==========================================================================" << endl;
+    cout << endl;
+
+    avgFaultPerInput /= 16;
+}
+
+void Circuit::logicSimulation() {
+    cout << "============================ (a) Truth Table ============================" << endl;
     cout << "x1\tx2\tx3\tx4\ty21\ty22\ta\tb\tc\tz" << endl;
 
     for (int i = 0; i < 16; ++i) {
-        // Assign input values based on the bit representation of i
 
         nodeList["x1"].trueValue = (i & 8) ? true : false;
         nodeList["x2"].trueValue = (i & 4) ? true : false;
@@ -48,22 +89,11 @@ void Circuit::deductiveSimulation() {
         trueValueSimulation();
         for (int i=0; i<10; i++) {
             cout << nodeList[nodeName[i]].trueValue << "\t";
-            nodeList[nodeName[i]].cleanList();
-            nodeList[nodeName[i]].addSelfFault();
         }
         cout << endl;
-
-        
-        nodeList["y21"].mergeBranchInv(nodeList["x2"]);
-        nodeList["y22"].mergeBranchInv(nodeList["x2"]);
-
-        nodeList["a"].mergeAnd(nodeList["y21"], nodeList["x1"]);
-        nodeList["b"].mergeNor(nodeList["y22"], nodeList["x3"]);
-        
-        nodeList["c"].mergeBranchInv(nodeList["x4"]);
-        nodeList["z"].mergeOr3(nodeList["a"], nodeList["b"], nodeList["c"]);
-
     }
+    cout << "=========================================================================" << endl;
+    cout << endl;
 }
 
 void Circuit::printAllNode() {
@@ -71,3 +101,30 @@ void Circuit::printAllNode() {
         nodeList[nodeName[i]].print();
     }
 }
+
+void Circuit::printFaultDetected() {
+    nodeList["z"].print();
+}
+
+void Circuit::printAvgFaultPerInput() {
+    cout << "===== (c) Average #fault per intput vector =====" << endl;
+    cout << "avg fault per input = " << avgFaultPerInput << endl;
+    cout << "================================================" << endl;
+    cout << endl;
+}
+
+void Circuit::printAvgPatternPerFault() {
+    cout << "======== (e) Average #pattern per fault ========" << endl;
+    // calculation
+    
+    for (auto& fault : faultList) {
+        cout << "#Pattern for " << fault.second->name << " = " << fault.second->count << endl;
+        avgPatternPerFault += fault.second->count;
+    }
+    cout << endl;
+    avgPatternPerFault /= 10;
+    cout << "avg pattern per fault = " << avgPatternPerFault << endl;
+    cout << "================================================" << endl;
+    cout << endl;
+}
+

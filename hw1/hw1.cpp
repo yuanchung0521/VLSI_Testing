@@ -3,11 +3,20 @@
 int main() {
 
     Circuit circuit;
-    circuit.trueValueSimulation();
-    // print fuction
+    // (a)
+    circuit.logicSimulation();
 
+    // (b)
     circuit.deductiveSimulation();
-    // result show here
-    circuit.printAllNode();
+    
+    // (c)
+    circuit.printAvgFaultPerInput();
+
+    // (d) is shown in (b)
+    // (e) 
+    circuit.printAvgPatternPerFault();
+    
+    // (f) is shown in (e)
+
     return 0;
 }
