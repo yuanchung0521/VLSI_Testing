@@ -1,0 +1,116 @@
+============================ (a) Truth Table ============================
+x1	x2	x3	x4	y21	y22	a	b	c	z
+0	0	0	0	0	0	0	1	1	1	
+0	0	0	1	0	0	0	1	0	1	
+0	0	1	0	0	0	0	0	1	1	
+0	0	1	1	0	0	0	0	0	0	
+0	1	0	0	1	1	0	0	1	1	
+0	1	0	1	1	1	0	0	0	0	
+0	1	1	0	1	1	0	0	1	1	
+0	1	1	1	1	1	0	0	0	0	
+1	0	0	0	0	0	0	1	1	1	
+1	0	0	1	0	0	0	1	0	1	
+1	0	1	0	0	0	0	0	1	1	
+1	0	1	1	0	0	0	0	0	0	
+1	1	0	0	1	1	1	0	1	1	
+1	1	0	1	1	1	1	0	0	1	
+1	1	1	0	1	1	1	0	1	1	
+1	1	1	1	1	1	1	0	0	1	
+=========================================================================
+
+===================== (b) deductive Fault Simulation =====================
+
+Input pattern (x1, x2, x3, x4) = (0 ,0 ,0 ,0) : 
+- #stuct-at-fault = 1
+- faults = Node z(1) : z_0 
+
+Input pattern (x1, x2, x3, x4) = (0 ,0 ,0 ,1) : 
+- #stuct-at-fault = 5
+- faults = Node z(1) : b_0 z_0 x2_1 y22_1 x3_1 
+
+Input pattern (x1, x2, x3, x4) = (0 ,0 ,1 ,0) : 
+- #stuct-at-fault = 3
+- faults = Node z(1) : c_0 x4_1 z_0 
+
+Input pattern (x1, x2, x3, x4) = (0 ,0 ,1 ,1) : 
+- #stuct-at-fault = 6
+- faults = Node z(0) : c_1 x4_0 b_1 x3_0 a_1 z_1 
+
+Input pattern (x1, x2, x3, x4) = (0 ,1 ,0 ,0) : 
+- #stuct-at-fault = 3
+- faults = Node z(1) : c_0 x4_1 z_0 
+
+Input pattern (x1, x2, x3, x4) = (0 ,1 ,0 ,1) : 
+- #stuct-at-fault = 6
+- faults = Node z(0) : c_1 x4_0 b_1 a_1 x1_1 z_1 
+
+Input pattern (x1, x2, x3, x4) = (0 ,1 ,1 ,0) : 
+- #stuct-at-fault = 3
+- faults = Node z(1) : c_0 x4_1 z_0 
+
+Input pattern (x1, x2, x3, x4) = (0 ,1 ,1 ,1) : 
+- #stuct-at-fault = 6
+- faults = Node z(0) : c_1 x4_0 b_1 a_1 x1_1 z_1 
+
+Input pattern (x1, x2, x3, x4) = (1 ,0 ,0 ,0) : 
+- #stuct-at-fault = 1
+- faults = Node z(1) : z_0 
+
+Input pattern (x1, x2, x3, x4) = (1 ,0 ,0 ,1) : 
+- #stuct-at-fault = 4
+- faults = Node z(1) : b_0 y22_1 x3_1 z_0 
+
+Input pattern (x1, x2, x3, x4) = (1 ,0 ,1 ,0) : 
+- #stuct-at-fault = 3
+- faults = Node z(1) : c_0 x4_1 z_0 
+
+Input pattern (x1, x2, x3, x4) = (1 ,0 ,1 ,1) : 
+- #stuct-at-fault = 8
+- faults = Node z(0) : c_1 x4_0 z_1 y21_1 x3_0 x2_1 a_1 b_1 
+
+Input pattern (x1, x2, x3, x4) = (1 ,1 ,0 ,0) : 
+- #stuct-at-fault = 1
+- faults = Node z(1) : z_0 
+
+Input pattern (x1, x2, x3, x4) = (1 ,1 ,0 ,1) : 
+- #stuct-at-fault = 5
+- faults = Node z(1) : a_0 x2_0 y21_0 x1_0 z_0 
+
+Input pattern (x1, x2, x3, x4) = (1 ,1 ,1 ,0) : 
+- #stuct-at-fault = 1
+- faults = Node z(1) : z_0 
+
+Input pattern (x1, x2, x3, x4) = (1 ,1 ,1 ,1) : 
+- #stuct-at-fault = 5
+- faults = Node z(1) : a_0 x2_0 y21_0 x1_0 z_0 
+==========================================================================
+
+===== (c) Average #fault per intput vector =====
+avg fault per input = 3.8125
+================================================
+
+======== (e) Average #pattern per fault ========
+#Pattern for z_0 = 12
+#Pattern for c_1 = 4
+#Pattern for c_0 = 4
+#Pattern for x3_0 = 2
+#Pattern for z_1 = 4
+#Pattern for x2_1 = 2
+#Pattern for a_0 = 2
+#Pattern for x2_0 = 2
+#Pattern for x4_1 = 4
+#Pattern for x1_0 = 2
+#Pattern for x1_1 = 2
+#Pattern for x4_0 = 4
+#Pattern for y22_1 = 2
+#Pattern for y21_0 = 2
+#Pattern for x3_1 = 2
+#Pattern for a_1 = 4
+#Pattern for y21_1 = 1
+#Pattern for y22_0 = 0
+#Pattern for b_1 = 4
+#Pattern for b_0 = 2
+
+avg pattern per fault = 3.05
+================================================
+
