@@ -51,7 +51,7 @@ void Node::mergeNor(const Node& fanIn1, const Node& fanIn2) {
         } else {
             for (const auto& entry : fanIn1.list) {
                 auto it = fanIn2.list.find(entry.first);
-                if (it!=fanIn2.list.end()) list.insert(entry);
+                if (it==fanIn2.list.end()) list.insert(entry);
             }
         }
     }
