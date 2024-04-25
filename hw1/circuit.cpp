@@ -122,7 +122,7 @@ void Circuit::printAvgPatternPerFault() {
         avgPatternPerFault += fault.second->count;
     }
     cout << endl;
-    avgPatternPerFault /= 10;
+    avgPatternPerFault /= 20;
     cout << "avg pattern per fault = " << avgPatternPerFault << endl;
     cout << "================================================" << endl;
     cout << endl;
